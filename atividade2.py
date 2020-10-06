@@ -77,10 +77,10 @@ m.addConstrs((vars_x[e] + vars_y[e]) <= 1 for e in dist.keys())
 
 # Optimize model
 
-#print(m.getConstrs())
-#m._vars = vars
-#m.Params.lazyConstraints = 1
-#m.optimize(subtourelim)
+
+m._vars = m.getVars()
+m.Params.lazyConstraints = 1
+m.optimize(subtourelim)
 
 #vals = m.getAttr('x', vars)
 #selected = gp.tuplelist((i, j) for i, j in vals.keys() if vals[i, j] > 0.5)
