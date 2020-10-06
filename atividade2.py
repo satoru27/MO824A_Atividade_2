@@ -91,13 +91,26 @@ m._vars = [vars_x,vars_y]
 m.Params.lazyConstraints = 1
 m.optimize(subtourelim)
 
-#vals_x = m.getAttr('x', vars)
-#selected = gp.tuplelist((i, j) for i, j in vals.keys() if vals[i, j] > 0.5)
+vals_x = {}
+vals_y = {}
+for key,value in vars_x.items():
+    vals_x[key] = value.X
 
-#tour = subtour(selected)
-#assert len(tour) == n
+for key,value in vars_y.items():
+    vals_y[key] = value.X
+
+selected_x = gp.tuplelist((i, j) for i, j in vals_x.keys() if vals_x[i, j] > 0.5)
+selected_y = gp.tuplelist((i, j) for i, j in vals_y.keys() if vals_y[i, j] > 0.5)
+
+tour_x = subtour(selected_x)
+print(tour_x)
+#assert len(tour_x) == n
+
+tour_y = subtour(selected_y)
+print(tour_y)
+#assert len(tour_y) == n
 
 #print('')
-#print('Optimal tour: %s' % str(tour))
+#print('Optimal tour_x: %s' % str(tour_x))
 #print('Optimal cost: %g' % m.objVal)
 #print('')
