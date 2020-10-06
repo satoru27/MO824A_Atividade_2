@@ -10,16 +10,25 @@ from gurobipy import GRB
 def subtourelim(model, where):
     if where == GRB.Callback.MIPSOL:
         # make a list of edges selected in the solution
-        vals = model.cbGetSolution(model._vars)
-        selected = gp.tuplelist((i, j) for i, j in model._vars.keys()
-                                if vals[i, j] > 0.5)
+        vals_x = model.cbGetSolution(model._vars[0])
+        vals_y = model.cbGetSolution(model._vars[1])
+        selected_x = gp.tuplelist((i, j) for i, j in model._vars[0].keys()
+                                if vals_x[i, j] > 0.5)
+        selected_y = gp.tuplelist((i, j) for i, j in model._vars[1].keys()
+                                if vals_y[i, j] > 0.5)
         # find the shortest cycle in the selected edge list
-        tour = subtour(selected)
-        if len(tour) < n:
+        tour_x = subtour(selected_x)
+        tour_y = subtour(selected_y)
+        if len(tour_x) < n:
             # add subtour elimination constr. for every pair of cities in tour
-            model.cbLazy(gp.quicksum(model._vars[i, j]
-                                     for i, j in combinations(tour, 2))
-                         <= len(tour)-1)
+            model.cbLazy(gp.quicksum(model._vars[0][i, j]
+                                     for i, j in combinations(tour_x, 2))
+                         <= len(tour_x)-1)
+        if len(tour_y) < n:
+            # add subtour elimination constr. for every pair of cities in tour
+            model.cbLazy(gp.quicksum(model._vars[1][i, j]
+                                     for i, j in combinations(tour_y, 2))
+                         <= len(tour_y)-1)
 
 
 # Given a tuplelist of edges, find the shortest subtour
@@ -78,11 +87,11 @@ m.addConstrs((vars_x[e] + vars_y[e]) <= 1 for e in dist.keys())
 # Optimize model
 
 
-m._vars = m.getVars()
+m._vars = [vars_x,vars_y]
 m.Params.lazyConstraints = 1
 m.optimize(subtourelim)
 
-#vals = m.getAttr('x', vars)
+#vals_x = m.getAttr('x', vars)
 #selected = gp.tuplelist((i, j) for i, j in vals.keys() if vals[i, j] > 0.5)
 
 #tour = subtour(selected)
