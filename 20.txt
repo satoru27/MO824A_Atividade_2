@@ -1,8 +1,108 @@
 TSP:
 
+Seed = 1
+
+Using license file C:\Users\vitor\gurobi.lic
+Academic license - for non-commercial use only
+Changed value of parameter lazyConstraints to 1
+   Prev: 0  Min: 0  Max: 1  Default: 0
+Gurobi Optimizer version 9.0.3 build v9.0.3rc0 (win64)
+Optimize a model with 20 rows, 190 columns and 380 nonzeros
+Model fingerprint: 0x42aaa748
+Variable types: 0 continuous, 190 integer (190 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 1e+00]
+  Objective range  [4e-02, 1e+00]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [2e+00, 2e+00]
+Presolve time: 0.00s
+Presolved: 20 rows, 190 columns, 380 nonzeros
+Variable types: 0 continuous, 190 integer (190 binary)
+
+Root relaxation: objective 4.031032e+00, 28 iterations, 0.00 seconds
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0    4.12011    0    6          -    4.12011      -     -    0s
+H    0     0                       4.1851126    4.12011  1.55%     -    0s
+H    0     0                       4.1732665    4.12011  1.27%     -    0s
+H    0     0                       4.1305532    4.12011  0.25%     -    0s
+     0     0     cutoff    0         4.13055    4.13055  0.00%     -    0s
+
+Cutting planes:
+  Clique: 1
+  Zero half: 1
+  Lazy constraints: 3
+
+Explored 1 nodes (32 simplex iterations) in 0.03 seconds
+Thread count was 12 (of 12 available processors)
+
+Solution count 3: 4.13055 4.17327 4.18511 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 4.130553213472e+00, best bound 4.130553213472e+00, gap 0.0000%
+
+User-callback calls 57, time in user-callback 0.00 sec
+
+Runtime (optimization) = 0.032909393310546875
+Modelling time + optimization = 0.04188823699951172
+
+Optimal tour: [0, 8, 7, 3, 18, 5, 11, 1, 9, 6, 19, 2, 14, 16, 12, 15, 17, 4, 13, 10]
+Optimal cost: 4.13055
 
 
 
 
 -----------------------------------------------------
 2TSP:
+
+Seed = 1
+
+Changed value of parameter TimeLimit to 1800.0
+   Prev: inf  Min: 0.0  Max: inf  Default: inf
+Changed value of parameter lazyConstraints to 1
+   Prev: 0  Min: 0  Max: 1  Default: 0
+Gurobi Optimizer version 9.0.3 build v9.0.3rc0 (win64)
+Optimize a model with 230 rows, 380 columns and 1140 nonzeros
+Model fingerprint: 0xb773e51b
+Variable types: 0 continuous, 380 integer (380 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 1e+00]
+  Objective range  [4e-02, 1e+00]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 2e+00]
+Presolve time: 0.00s
+Presolved: 230 rows, 380 columns, 1140 nonzeros
+Variable types: 0 continuous, 380 integer (380 binary)
+
+Root relaxation: objective 1.041704e+01, 151 iterations, 0.00 seconds
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0   10.41704    0   16          -   10.41704      -     -    0s
+     0     0   10.41704    0   38          -   10.41704      -     -    0s
+*    0     0               0      10.4170381   10.41704  0.00%     -    0s
+
+Cutting planes:
+  Gomory: 3
+  Zero half: 9
+  Lazy constraints: 16
+
+Explored 1 nodes (190 simplex iterations) in 0.04 seconds
+Thread count was 12 (of 12 available processors)
+
+Solution count 1: 10.417 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 1.041703812187e+01, best bound 1.041703812187e+01, gap 0.0000%
+
+User-callback calls 68, time in user-callback 0.01 sec
+
+Runtime (optimization) = 0.03989219665527344
+Modelling time + optimization = 0.05086350440979004
+
+First tour: [0, 8, 7, 3, 18, 5, 11, 9, 6, 1, 19, 2, 14, 12, 4, 15, 17, 13, 10, 16]
+Second tour: [0, 7, 14, 16, 12, 15, 13, 4, 17, 6, 19, 9, 5, 1, 11, 18, 2, 3, 8, 10]
+Optimal cost: 10.417
