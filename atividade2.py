@@ -42,12 +42,17 @@ def subtour(edges):
     return cycle
 
 
-n = 20
+# Parse argument
+if len(sys.argv) < 2:
+    print('Usage: atividade2.py npoints')
+    sys.exit(1)
+n = int(sys.argv[1])
+
 # Create n random points
-# os valores dos pontos randomicos sao utilizados para definir as distancias euclidianas entre eles
-# definindo assim as arestas, os "nomes" dos vertices sao de 0 a 19.
+# define the position of each point in the plane, in float coordinates [0,1]
+# the vertices' "names" are [0,n-1].
 random.seed(1)
-points = [(random.randint(0, 100), random.randint(0, 100)) for i in range(n)]
+points = [(random.uniform(0,1), random.uniform(0,1)) for i in range(n)]
 
 
 # Dictionary of Euclidean distance between each pair of points
