@@ -1,3 +1,22 @@
+'''
+Activity 2 - IP model for 2-TSP.
+
+atividade2.py: solves 2-TSP, using Gurobi.
+
+2-TSP: find the 2 shortest hamiltonian cycles in a complete graph.
+Based on Gurobi's `tsp.py` example.
+
+Subject:
+    MC859/MO824 - Operational Research.
+Authors:
+    Victor Ferreira Ferrari  	 - RA 187890
+    Flávio Murilo Reginato       - RA 197088
+    Vitor Satoru Machi Matsumine - RA 264962
+
+University of Campinas - UNICAMP - 2020
+
+Last Modified: 06/10/2020
+'''
 import sys
 import math
 import random
@@ -60,7 +79,10 @@ dist = {(i, j):
         math.sqrt(sum((points[i][k]-points[j][k])**2 for k in range(2)))
         for i in range(n) for j in range(i)}
 
-m = gp.Model()
+m = gp.Model("2-TSP")
+
+
+### START OF MODEL ###
 
 # Variables
 vars_x = m.addVars(dist.keys(), obj=dist, vtype=GRB.BINARY)
@@ -71,12 +93,8 @@ for (ix, jx), (iy, jy) in zip(vars_x.keys(), vars_y.keys()):
     vars_x[jx, ix] = vars_x[ix, jx]
     vars_y[jy, iy] = vars_y[iy, jy]
 
-m.modelSense = GRB.MINIMIZE
-m.setParam('TimeLimit', 30*60)
-
-
 # Objective function
-m.setObjective(sum(dist[e]*(vars_x[e] + vars_y[e]) for e in dist.keys()))
+m.setObjective(sum(dist[e]*(vars_x[e] + vars_y[e]) for e in dist.keys()), GRB.MINIMIZE)
 
 # Subject to:
 # Degree of each vertex in the tour subgraph.
@@ -86,10 +104,16 @@ m.addConstrs(vars_y.sum(i, '*') == 2 for i in range(n))
 # Tours need to be edge-disjoint.
 m.addConstrs((vars_x[e] + vars_y[e]) <= 1 for e in dist.keys())
 
+### END OF MODEL ###
+
+# Set time limit of 30 minutes.
+m.setParam('TimeLimit', 30*60)
+
 # Optimize model with lazy constraint (subtour)
 m._vars = [vars_x,vars_y]
 m.Params.lazyConstraints = 1
 m.optimize(subtourelim)
+
 
 # Get solution
 vals_x,vals_y = m.getAttr('x', vars_x), m.getAttr('x',vars_y)
