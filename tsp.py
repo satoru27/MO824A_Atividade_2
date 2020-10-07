@@ -59,6 +59,7 @@ if len(sys.argv) < 2:
     print('Usage: tsp.py npoints')
     sys.exit(1)
 n = int(sys.argv[1])
+print(f"n = {n}")
 
 # Create n random points
 seed_value = 1

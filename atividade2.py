@@ -144,6 +144,7 @@ if __name__ == '__main__':
     	sys.exit(1)
     n = int(sys.argv[1])
     #n = 20
+    print(f"n = {n}")
     # Create instance and solve
     dist = generate_instance(n)
     x,y,cost = solve_2tsp(dist)
