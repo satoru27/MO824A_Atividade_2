@@ -106,8 +106,13 @@ m.addConstrs((vars_x[e] + vars_y[e]) <= 1 for e in dist.keys())
 
 ### END OF MODEL ###
 
+
 # Set time limit of 30 minutes.
 m.setParam('TimeLimit', 30*60)
+
+# Refresh and save model.
+m.update()
+m.write(f'2-tsp_{n}cities.lp')
 
 # Optimize model with lazy constraint (subtour)
 m._vars = [vars_x,vars_y]
