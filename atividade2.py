@@ -32,7 +32,6 @@ def subtourelim(model, where):
 
 
 # Given a tuplelist of edges, find the shortest subtour
-
 def subtour(edges):
     unvisited = list(range(n))
     cycle = range(n+1)  # initial length has 1 more city
@@ -50,7 +49,7 @@ def subtour(edges):
     return cycle
 
 
-n = 20
+n = 100
 # Create n random points
 # os valores dos pontos randomicos sao utilizados para definir as distancias euclidianas entre eles
 # definindo assim as arestas, os "nomes" dos vertices sao de 0 a 19.
@@ -59,58 +58,56 @@ points = [(random.randint(0, 100), random.randint(0, 100)) for i in range(n)]
 
 
 # Dictionary of Euclidean distance between each pair of points
-
 dist = {(i, j):
         math.sqrt(sum((points[i][k]-points[j][k])**2 for k in range(2)))
         for i in range(n) for j in range(i)}
-for i in range(n):
-    for j in range(i):
-        dist[(j,i)] = dist[(i,j)]
 
 m = gp.Model()
 
+# Variables
 vars_x = m.addVars(dist.keys(), obj=dist, vtype=GRB.BINARY)
 vars_y = m.addVars(dist.keys(), obj=dist, vtype=GRB.BINARY)
+
+# Add edges in both directions.
+for (ix, jx), (iy, jy) in zip(vars_x.keys(), vars_y.keys()):
+    vars_x[jx, ix] = vars_x[ix, jx]
+    vars_y[jy, iy] = vars_y[iy, jy]
 
 m.modelSense = GRB.MINIMIZE
 m.setParam('TimeLimit', 30*60)
 
+
+# Objective function
 m.setObjective(sum(dist[e]*(vars_x[e] + vars_y[e]) for e in dist.keys()))
 
-
+# Subject to:
+# Degree of each vertex in the tour subgraph.
 m.addConstrs(vars_x.sum(i, '*') == 2 for i in range(n))
 m.addConstrs(vars_y.sum(i, '*') == 2 for i in range(n))
 
-
+# Tours need to be edge-disjoint.
 m.addConstrs((vars_x[e] + vars_y[e]) <= 1 for e in dist.keys())
 
-# Optimize model
-
-
+# Optimize model with lazy constraint (subtour)
 m._vars = [vars_x,vars_y]
 m.Params.lazyConstraints = 1
 m.optimize(subtourelim)
 
-vals_x = {}
-vals_y = {}
-for key,value in vars_x.items():
-    vals_x[key] = value.X
-
-for key,value in vars_y.items():
-    vals_y[key] = value.X
+# Get solution
+vals_x,vals_y = m.getAttr('x', vars_x), m.getAttr('x',vars_y)
 
 selected_x = gp.tuplelist((i, j) for i, j in vals_x.keys() if vals_x[i, j] > 0.5)
 selected_y = gp.tuplelist((i, j) for i, j in vals_y.keys() if vals_y[i, j] > 0.5)
 
+# Find tours from selected, assert length.
 tour_x = subtour(selected_x)
-print(tour_x)
-#assert len(tour_x) == n
+assert len(tour_x) == n
 
 tour_y = subtour(selected_y)
-print(tour_y)
-#assert len(tour_y) == n
+assert len(tour_y) == n
 
-#print('')
-#print('Optimal tour_x: %s' % str(tour_x))
-#print('Optimal cost: %g' % m.objVal)
-#print('')
+print('')
+print('First tour: %s' % str(tour_x))
+print('Second tour: %s' % str(tour_y))
+print('Optimal cost: %g' % m.objVal)
+print('')
