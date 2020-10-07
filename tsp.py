@@ -15,6 +15,7 @@ import random
 from itertools import combinations
 import gurobipy as gp
 from gurobipy import GRB
+import time
 
 
 # Callback - use lazy constraints to eliminate sub-tours
@@ -60,8 +61,9 @@ if len(sys.argv) < 2:
 n = int(sys.argv[1])
 
 # Create n random points
-
-random.seed(1)
+seed_value = 1
+print(f"Seed = {seed_value}\n")
+random.seed(seed_value)
 points = [(random.uniform(0, 1), random.uniform(0, 1)) for i in range(n)]
 
 # Dictionary of Euclidean distance between each pair of points
@@ -70,6 +72,7 @@ dist = {(i, j):
         math.sqrt(sum((points[i][k]-points[j][k])**2 for k in range(2)))
         for i in range(n) for j in range(i)}
 
+t_start = time.time()
 m = gp.Model()
 
 # Create variables
@@ -103,6 +106,10 @@ m.addConstrs(vars.sum(i, '*') == 2 for i in range(n))
 m._vars = vars
 m.Params.lazyConstraints = 1
 m.optimize(subtourelim)
+
+t_end = time.time()
+print(f"\nRuntime (optimization) = {m.Runtime}")
+print(f"Modelling time + optimization = {t_end - t_start}")
 
 vals = m.getAttr('x', vars)
 selected = gp.tuplelist((i, j) for i, j in vals.keys() if vals[i, j] > 0.5)
