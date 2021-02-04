@@ -1,5 +1,10 @@
 # A2_E08
 
+## Equipe
+ - Victor Ferreira Ferrari      (187890)
+ - Flávio Murilo Reginato       (197088)
+ - Vitor Satoru Machi Matsumine (264962)
+
 ## Execução do Modelo para 2-TSP
 
 Comando:
